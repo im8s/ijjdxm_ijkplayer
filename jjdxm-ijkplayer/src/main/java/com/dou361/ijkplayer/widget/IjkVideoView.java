@@ -277,6 +277,10 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         }
     }
 
+    public void setMediaCodec(boolean isHard) {
+        usingMediaCodec = isHard;
+    }
+
     /**
      * 旋转渲染器
      */

@@ -264,6 +264,11 @@ public class PlayerView {
      */
     private boolean isGNetWork = true;
 
+    public static final int RENDER_SURFACE_VIEW = IjkVideoView.RENDER_SURFACE_VIEW; // 1 硬解
+    public static final int RENDER_TEXTURE_VIEW = IjkVideoView.RENDER_TEXTURE_VIEW; // 2 软解
+
+    private static int currentRenderType = RENDER_SURFACE_VIEW; // 默认硬解
+
     private boolean isCharge;
     private int maxPlaytime;
     /**
@@ -858,6 +863,10 @@ public class PlayerView {
         return false;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
     /**
      * ==========================================Activity生命周期方法回调=============================
      */
@@ -1005,6 +1014,32 @@ public class PlayerView {
         return this;
     }
 
+    public void setRenderType(int type) {
+        switch (type) {
+            case RENDER_SURFACE_VIEW:
+                if (null != videoView) {
+                    currentRenderType = type;
+                    videoView.setMediaCodec(true);
+                    videoView.setRender(currentRenderType);
+                }
+                break;
+            case RENDER_TEXTURE_VIEW:
+                if (null != videoView) {
+                    currentRenderType = type;
+                    videoView.setMediaCodec(false);
+                    videoView.setRender(currentRenderType);
+                }
+                break;
+            default:
+                //不支持
+                break;
+        }
+    }
+
+    public int getRenderType() {
+        return currentRenderType;
+    }
+
     /**
      * 开始播放
      */
@@ -1015,7 +1050,8 @@ public class PlayerView {
         } else {
             if (isHasSwitchStream || status == PlayStateParams.STATE_ERROR) {
                 //换源之后声音可播，画面卡住，主要是渲染问题，目前只是提供了软解方式，后期提供设置方式
-                videoView.setRender(videoView.RENDER_TEXTURE_VIEW);
+//                videoView.setRender(videoView.RENDER_TEXTURE_VIEW);
+                videoView.setRender(currentRenderType);
                 videoView.setVideoPath(currentUrl);
                 videoView.seekTo(currentPosition);
                 isHasSwitchStream = false;
@@ -1605,7 +1641,7 @@ public class PlayerView {
                 } else {
                     hideAll();
                     if (isLive) {
-                        showStatus("获取不到直播源");
+                        showStatus("播放失败，请刷新重试");
                     } else {
                         showStatus(mActivity.getResources().getString(R.string.small_problem));
                     }
