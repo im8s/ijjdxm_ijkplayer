@@ -1,6 +1,9 @@
 package com.dou361.ijkplayer.listener;
 
 import android.widget.ImageView;
+
+import com.dou361.ijkplayer.widget.IjkVideoView;
+
 /**
  * ========================================
  * <p>

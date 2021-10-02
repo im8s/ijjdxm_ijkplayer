@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -1014,7 +1017,7 @@ public class PlayerView {
         return this;
     }
 
-    public void setRenderType(int type) {
+    public PlayerView setRenderType(int type) {
         switch (type) {
             case RENDER_SURFACE_VIEW:
                 if (null != videoView) {
@@ -1034,10 +1037,19 @@ public class PlayerView {
                 //不支持
                 break;
         }
+        return this;
     }
 
     public int getRenderType() {
         return currentRenderType;
+    }
+
+    public PlayerView setPlayerViewBackground(Drawable drawable) {
+        if (null != videoView) {
+            videoView.setBackgroundDrawable(drawable);
+        }
+
+        return this;
     }
 
     /**
@@ -1626,6 +1638,7 @@ public class PlayerView {
                         operatorPanl();
                     }
                     /**延迟0.5秒隐藏视频封面隐藏*/
+                    videoView.setBackgroundDrawable(null);
                     query.id(R.id.ll_bg).gone();
                 }
             }, 500);
